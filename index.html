@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gold and Bitcoin Price Charts</title>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #1e1e1e;
+        }
+        .chart-container {
+            height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #2a2a2a;
+        }
+        h2 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+        #tradingview_widget_gold,
+        #tradingview_widget_btc {
+            flex: 1;
+        }
+        .chart-selector {
+            display: flex;
+        }
+        .chart-selector button {
+            background-color: #2962FF;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .chart-selector button:hover {
+            background-color: #0039CB;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+        .chart-selector button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .chart-selector button:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.3);
+        }
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 20px;
+            }
+            .chart-selector button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 18px;
+            }
+            .chart-selector button {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+            .chart-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .chart-selector {
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gold-chart" class="chart-container">
+        <div class="chart-header">
+            <h2>Gold Price Chart (XAUUSD)</h2>
+            <div class="chart-selector">
+                <button onclick="showChart('gold')">Gold</button>
+                <button onclick="showChart('btc')">Bitcoin</button>
+            </div>
+        </div>
+        <div id="tradingview_widget_gold"></div>
+    </div>
+    <div id="btc-chart" class="chart-container" style="display: none;">
+        <div class="chart-header">
+            <h2>Bitcoin Price Chart (BTCUSDT)</h2>
+            <div class="chart-selector">
+                <button onclick="showChart('gold')">Gold</button>
+                <button onclick="showChart('btc')">Bitcoin</button>
+            </div>
+        </div>
+        <div id="tradingview_widget_btc"></div>
+    </div>
+    <script type="text/javascript">
+        function showChart(chartType) {
+            document.getElementById('gold-chart').style.display = chartType === 'gold' ? 'flex' : 'none';
+            document.getElementById('btc-chart').style.display = chartType === 'btc' ? 'flex' : 'none';
+        }
+
+        function createWidget(containerId, symbol, studies, drawings) {
+            return new TradingView.widget({
+                "width": "100%",
+                "height": "100%",
+                "symbol": symbol,
+                "interval": "D",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "en",
+                "toolbar_bg": "#2a2a2a",
+                "enable_publishing": false,
+                "allow_symbol_change": true,
+                "container_id": containerId,
+                "studies": studies,
+                "drawings": drawings,
+                "overrides": {
+                    "paneProperties.legendProperties.showStudyArguments": true,
+                    "paneProperties.legendProperties.showStudyTitles": true,
+                    "paneProperties.legendProperties.showStudyValues": true,
+                    "paneProperties.legendProperties.showSeriesTitle": true,
+                    "paneProperties.legendProperties.showSeriesOHLC": true,
+                },
+                "drawings_access": { "type": "all", "tools": [ { "name": "Regression Trend" } ] },
+                "saved_drawings": true,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "details": true,
+                "hotlist": true,
+                "calendar": true,
+                "show_popup_button": true,
+                "popup_width": "1000",
+                "popup_height": "650",
+                "save_image": true,
+                "client_id": "tradingview.com",
+                "user_id": "public_user_id",
+                "loading_screen": { "backgroundColor": "#1e1e1e", "foregroundColor": "#2a2a2a" },
+            });
+        }
+
+        const goldStudies = [
+            "MASimple@tv-basicstudies",
+            "BB@tv-basicstudies",
+            "LUXALGO;LIQUIDITY SWING@tv-basicstudies",
+            "LUXALGO;Liquidity Swings@tv-basicstudies",
+            "Volume@tv-basicstudies",
+        ];
+
+        const goldDrawings = [
+            { "name": "Support", "type": "horizontal_line", "price": 1700 },
+            { "name": "Resistance", "type": "horizontal_line", "price": 1800 }
+        ];
+
+        const btcStudies = [
+            "MASimple@tv-basicstudies",
+            "BB@tv-basicstudies",
+            "LUXALGO;LIQUIDITY SWING@tv-basicstudies",
+            "LUXALGO;Liquidity Swings@tv-basicstudies",
+            "Volume@tv-basicstudies",
+        ];
+
+        const btcDrawings = [
+            { "name": "Support", "type": "horizontal_line", "price": 25000 },
+            { "name": "Resistance", "type": "horizontal_line", "price": 30000 }
+        ];
+
+        createWidget("tradingview_widget_gold", "OANDA:XAUUSD", goldStudies, goldDrawings);
+        createWidget("tradingview_widget_btc", "BINANCE:BTCUSDT", btcStudies, btcDrawings);
+    </script>
+</body>
+</html>
